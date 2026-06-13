@@ -1,4 +1,5 @@
-﻿namespace TmsApi;
+﻿
+namespace TmsApi;
 
 public class EnrollmentWorker
 {
