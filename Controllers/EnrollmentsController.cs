@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using TmsApi;
-
 namespace TmsApi.Controllers;
 
 [ApiController]

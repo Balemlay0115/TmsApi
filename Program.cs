@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.OpenApi;
 using Scalar.AspNetCore;
 using TmsApi;
 
@@ -14,7 +13,7 @@ builder.Services
 builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<EnrollmentWorker>();
-builder.Services.AddSingleton<IEnrollmentService, EnrollmentService>();
+builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 
 builder.Services.AddOptions<PaymentOptions>()
     .BindConfiguration("Payments")
