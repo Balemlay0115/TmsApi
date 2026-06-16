@@ -14,6 +14,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<EnrollmentWorker>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 
 builder.Services.AddOptions<PaymentOptions>()
     .BindConfiguration("Payments")
