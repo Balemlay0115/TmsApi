@@ -555,11 +555,7 @@
           }
         }
       },
-<<<<<<< HEAD
       "Scalar.AspNetCore/2.16.4": {
-=======
-      "Scalar.AspNetCore/2.16.3": {
->>>>>>> bd0f3b7fdfdd91a82ed438331a081e072376c112
         "type": "package",
         "compile": {
           "lib/net10.0/Scalar.AspNetCore.dll": {
@@ -1974,108 +1970,6 @@
     },
     "Microsoft.VisualStudio.SolutionPersistence/1.0.52": {
       "sha512": "oNv2JtYXhpdJrX63nibx1JT3uCESOBQ1LAk7Dtz/sr0+laW0KRM6eKp4CZ3MHDR2siIkKsY8MmUkeP5DKkQQ5w==",
-<<<<<<< HEAD
-=======
-      "type": "package",
-      "path": "microsoft.visualstudio.solutionpersistence/1.0.52",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "NOTICE",
-        "lib/net472/Microsoft.VisualStudio.SolutionPersistence.dll",
-        "lib/net472/Microsoft.VisualStudio.SolutionPersistence.xml",
-        "lib/net472/manifest.spdx.json",
-        "lib/net8.0/Microsoft.VisualStudio.SolutionPersistence.dll",
-        "lib/net8.0/Microsoft.VisualStudio.SolutionPersistence.xml",
-        "lib/net8.0/manifest.spdx.json",
-        "microsoft.visualstudio.solutionpersistence.1.0.52.nupkg.sha512",
-        "microsoft.visualstudio.solutionpersistence.nuspec"
-      ]
-    },
-    "Mono.TextTemplating/3.0.0": {
-      "sha512": "YqueG52R/Xej4VVbKuRIodjiAhV0HR/XVbLbNrJhCZnzjnSjgMJ/dCdV0akQQxavX6hp/LC6rqLGLcXeQYU7XA==",
-      "type": "package",
-      "path": "mono.texttemplating/3.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.txt/LICENSE",
-        "buildTransitive/Mono.TextTemplating.targets",
-        "lib/net472/Mono.TextTemplating.dll",
-        "lib/net6.0/Mono.TextTemplating.dll",
-        "lib/netstandard2.0/Mono.TextTemplating.dll",
-        "mono.texttemplating.3.0.0.nupkg.sha512",
-        "mono.texttemplating.nuspec",
-        "readme.md"
-      ]
-    },
-    "Newtonsoft.Json/13.0.3": {
-      "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
-      "type": "package",
-      "path": "newtonsoft.json/13.0.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.md",
-        "README.md",
-        "lib/net20/Newtonsoft.Json.dll",
-        "lib/net20/Newtonsoft.Json.xml",
-        "lib/net35/Newtonsoft.Json.dll",
-        "lib/net35/Newtonsoft.Json.xml",
-        "lib/net40/Newtonsoft.Json.dll",
-        "lib/net40/Newtonsoft.Json.xml",
-        "lib/net45/Newtonsoft.Json.dll",
-        "lib/net45/Newtonsoft.Json.xml",
-        "lib/net6.0/Newtonsoft.Json.dll",
-        "lib/net6.0/Newtonsoft.Json.xml",
-        "lib/netstandard1.0/Newtonsoft.Json.dll",
-        "lib/netstandard1.0/Newtonsoft.Json.xml",
-        "lib/netstandard1.3/Newtonsoft.Json.dll",
-        "lib/netstandard1.3/Newtonsoft.Json.xml",
-        "lib/netstandard2.0/Newtonsoft.Json.dll",
-        "lib/netstandard2.0/Newtonsoft.Json.xml",
-        "newtonsoft.json.13.0.3.nupkg.sha512",
-        "newtonsoft.json.nuspec",
-        "packageIcon.png"
-      ]
-    },
-    "Npgsql/10.0.3": {
-      "sha512": "7nb5YzXuvWWJxB0J8DiyL3we+X4FOctZrt0fIBnucOIaIevFEEwGQVZKtiu9olXdlNAK1eNgqSral6r/jlhI4w==",
-      "type": "package",
-      "path": "npgsql/10.0.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "lib/net10.0/Npgsql.dll",
-        "lib/net10.0/Npgsql.xml",
-        "lib/net8.0/Npgsql.dll",
-        "lib/net8.0/Npgsql.xml",
-        "lib/net9.0/Npgsql.dll",
-        "lib/net9.0/Npgsql.xml",
-        "npgsql.10.0.3.nupkg.sha512",
-        "npgsql.nuspec",
-        "postgresql.png"
-      ]
-    },
-    "Npgsql.EntityFrameworkCore.PostgreSQL/10.0.2": {
-      "sha512": "PsNYgPOSW41Xx19gin7y4EdZAPteWr9Cb01XkdObxOsPzi+mgBupBEN7J7+erXFsROPOILM7MlIoO9QzL8+LGQ==",
-      "type": "package",
-      "path": "npgsql.entityframeworkcore.postgresql/10.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "lib/net10.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll",
-        "lib/net10.0/Npgsql.EntityFrameworkCore.PostgreSQL.xml",
-        "npgsql.entityframeworkcore.postgresql.10.0.2.nupkg.sha512",
-        "npgsql.entityframeworkcore.postgresql.nuspec",
-        "postgresql.png"
-      ]
-    },
-    "Scalar.AspNetCore/2.16.3": {
-      "sha512": "GhQUD/eiUKo1gh+9gYwwT3ndnb/wdZavwwHlXnnTKc55d51Qcu6sdAPfil9paPGrw8BTpF/GL8INZm1sK4kJLQ==",
->>>>>>> bd0f3b7fdfdd91a82ed438331a081e072376c112
       "type": "package",
       "path": "microsoft.visualstudio.solutionpersistence/1.0.52",
       "files": [
@@ -2385,27 +2279,23 @@
       "Microsoft.EntityFrameworkCore.Design >= 10.0.9",
       "Microsoft.EntityFrameworkCore.Tools >= 10.0.9",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 10.0.2",
-<<<<<<< HEAD
       "Scalar.AspNetCore >= 2.16.4"
-=======
-      "Scalar.AspNetCore >= 2.16.3"
->>>>>>> bd0f3b7fdfdd91a82ed438331a081e072376c112
     ]
   },
   "packageFolders": {
-    "C:\\Users\\CSUG\\.nuget\\packages\\": {}
+    "C:\\Users\\csug\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\CSUG\\Desktop\\tmsApi\\TmsApi\\TmsApi.csproj",
+      "projectUniqueName": "C:\\Users\\csug\\Desktop\\tmsapi\\TmsApi\\TmsApi.csproj",
       "projectName": "TmsApi",
-      "projectPath": "C:\\Users\\CSUG\\Desktop\\tmsApi\\TmsApi\\TmsApi.csproj",
-      "packagesPath": "C:\\Users\\CSUG\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\CSUG\\Desktop\\tmsApi\\TmsApi\\obj\\",
+      "projectPath": "C:\\Users\\csug\\Desktop\\tmsapi\\TmsApi\\TmsApi.csproj",
+      "packagesPath": "C:\\Users\\csug\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\csug\\Desktop\\tmsapi\\TmsApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\CSUG\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\csug\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -2481,7 +2371,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

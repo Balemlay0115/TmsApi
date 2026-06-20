@@ -22,7 +22,6 @@ public class EnrollmentService : IEnrollmentService
 
     public Task<EnrollmentRecord> EnrollAsync(string studentId, string courseCode)
     {
-        // Duplicate check
         var existing = _store.Values.FirstOrDefault(e => e.StudentId == studentId && e.CourseCode == courseCode);
         if (existing is not null)
         {
