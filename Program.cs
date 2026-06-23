@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using TmsApi;
 using TmsApi.Data;
+using TmsApi.DTOs;
 using TmsApi.Entities;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
@@ -82,6 +83,42 @@ app.MapGet("/api/enrollments/worker-smoke", async (EnrollmentWorker worker) =>
 {
     await worker.ProcessBatch();
     return Results.Ok("processed");
+});
+
+app.MapGet("/api/students", async (TmsDbContext context, int page = 1, CancellationToken ct = default) =>
+{
+    const int pageSize = 20;
+    if (page < 1) page = 1;
+
+    var pagedStudents = await context.Students
+        .OrderBy(s => s.Name)
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .Select(s => new StudentResponseDto
+        {
+            Id = s.Id,
+            RegistrationNumber = s.RegistrationNumber,
+            Name = s.Name,
+            GPA = s.GPA
+        })
+        .ToListAsync(ct);
+
+    return Results.Ok(pagedStudents);
+});
+app.MapGet("/api/dashboard/top-courses", async (TmsDbContext context, CancellationToken ct = default) =>
+{
+    var topCourses = await context.Enrollments
+        .GroupBy(e => e.Course.Title)
+        .Select(group => new
+        {
+            CourseTitle = group.Key,
+            EnrollmentCount = group.Count()
+        })
+        .OrderByDescending(c => c.EnrollmentCount)
+        .Take(5)
+        .ToListAsync(ct);
+
+    return Results.Ok(topCourses);
 });
 
 using (var scope = app.Services.CreateAsyncScope())
