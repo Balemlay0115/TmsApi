@@ -10,7 +10,7 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
     {
         builder.HasKey(e => e.Id);
 
-        // Enforce Restrict Delete so dropping a course doesn't delete student records
+      
         builder.HasOne(e => e.Student)
             .WithMany(s => s.Enrollments)
             .HasForeignKey(e => e.StudentId)

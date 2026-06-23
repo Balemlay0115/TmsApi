@@ -9,6 +9,10 @@ public class Enrollment
     public int CourseId { get; set; }
     public decimal? Grade { get; set; }
     public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
+   
+
+    public bool IsArchived { get; set; } 
+
     public Student Student { get; set; } = null!;
     public Course Course { get; set; } = null!;
 }
