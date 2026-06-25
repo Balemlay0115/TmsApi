@@ -11,7 +11,7 @@ public class StudentsController : ControllerBase
     private readonly IStudentService _studentService;
     private readonly TmsDbContext _db;
 
-    public System.Security.Cryptography.RandomNumberGenerator _rng;
+    public System.Security.Cryptography.RandomNumberGenerator? _rng;
 
     public StudentsController(IStudentService studentService, TmsDbContext db)
     {
@@ -22,7 +22,7 @@ public class StudentsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var students = await _studentService.GetAllAsync();
+        var students = await _db.Students.AsNoTracking().ToListAsync();
         return Ok(students);
     }
 
@@ -137,25 +137,48 @@ public class StudentsController : ControllerBase
         });
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
+    [HttpPost("bulk-archive-test")]
+    public async Task<IActionResult> TestBulkArchive([FromQuery] int cutoffYear, CancellationToken cancellationToken)
     {
-        var student = await _studentService.GetByIdAsync(id);
+        var updatedRows = await _db.Enrollments
+            .Where(e => e.EnrolledAt.Year < cutoffYear && !e.IsArchived)
+            .ExecuteUpdateAsync(s => s.SetProperty(e => e.IsArchived, true), cancellationToken);
+
+        return Ok(new { RowsArchived = updatedRows });
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var student = await _db.Students.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
         return student is not null ? Ok(student) : NotFound();
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateStudentRequest request)
     {
-        var student = await _studentService.CreateAsync(request.Name, request.Email);
+        var student = new TmsApi.Entities.Student
+        {
+            Name = request.Name,
+            RegistrationNumber = $"TMS-2026-{Guid.NewGuid().ToString()[..4].ToUpper()}"
+        };
+
+        _db.Students.Add(student);
+        await _db.SaveChangesAsync();
+
         return CreatedAtAction(nameof(GetById), new { id = student.Id }, student);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await _studentService.DeleteAsync(id);
-        return deleted ? NoContent() : NotFound();
+        var student = await _db.Students.FindAsync(id);
+        if (student == null) return NotFound();
+
+        student.IsDeleted = true;
+        var affected = await _db.SaveChangesAsync();
+        
+        return affected > 0 ? NoContent() : NotFound();
     }
 }
 

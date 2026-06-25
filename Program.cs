@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<TmsDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase"))
-        .UseModel(TmsApi.Data.CompiledModels.TmsDbContextModel.Instance)
         .LogTo(Console.WriteLine, LogLevel.Information)
         .EnableSensitiveDataLogging());
 
@@ -86,26 +85,6 @@ app.MapGet("/api/enrollments/worker-smoke", async (EnrollmentWorker worker) =>
     return Results.Ok("processed");
 });
 
-app.MapGet("/api/students", async (TmsDbContext context, int page = 1, CancellationToken ct = default) =>
-{
-    const int pageSize = 20;
-    if (page < 1) page = 1;
-
-    var pagedStudents = await context.Students
-        .OrderBy(s => s.Name)
-        .Skip((page - 1) * pageSize)
-        .Take(pageSize)
-        .Select(s => new StudentResponseDto
-        {
-            Id = s.Id,
-            RegistrationNumber = s.RegistrationNumber,
-            Name = s.Name,
-            GPA = s.GPA
-        })
-        .ToListAsync(ct);
-
-    return Results.Ok(pagedStudents);
-});
 app.MapGet("/api/dashboard/top-courses", async (TmsDbContext context, CancellationToken ct = default) =>
 {
     var topCourses = await context.Enrollments
@@ -125,7 +104,7 @@ app.MapGet("/api/dashboard/top-courses", async (TmsDbContext context, Cancellati
 using (var scope = app.Services.CreateAsyncScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<TmsDbContext>();
-    
+
     context.Database.Migrate();
 
     if (!context.Students.Any())
@@ -136,7 +115,7 @@ using (var scope = app.Services.CreateAsyncScope())
             new() { RegistrationNumber = "TMS-2026-0002", Name = "Bob Jones", GPA = 2.9m, IsActive = true },
             new() { RegistrationNumber = "TMS-2026-0003", Name = "Charlie Brown", GPA = 3.4m, IsActive = false },
             new() { RegistrationNumber = "TMS-2026-0004", Name = "Diana Prince", GPA = 3.9m, IsActive = true },
-            new() { RegistrationNumber = "TMS-2026-0005", Name = "Evan Wright", GPA = 2.5m, IsActive = true } 
+            new() { RegistrationNumber = "TMS-2026-0005", Name = "Evan Wright", GPA = 2.5m, IsActive = true }
         };
         context.Students.AddRange(students);
 
@@ -153,8 +132,8 @@ using (var scope = app.Services.CreateAsyncScope())
         {
             new() { StudentId = students[0].Id, CourseId = courses[0].Id, Grade = 4.0m },
             new() { StudentId = students[0].Id, CourseId = courses[1].Id, Grade = 3.6m },
-            new() { StudentId = students[1].Id, CourseId = courses[0].Id, Grade = 2.8m }, 
-            new() { StudentId = students[3].Id, CourseId = courses[1].Id, Grade = 3.9m }    
+            new() { StudentId = students[1].Id, CourseId = courses[0].Id, Grade = 2.8m },
+            new() { StudentId = students[3].Id, CourseId = courses[1].Id, Grade = 3.9m }
         };
         context.Enrollments.AddRange(enrollments);
         context.SaveChanges();

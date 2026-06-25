@@ -22,11 +22,14 @@ public class TmsDbContext(DbContextOptions<TmsDbContext> options) : DbContext(op
     {
         var entries = ChangeTracker
             .Entries()
-            .Where(e => e.Entity is Student && (e.State == EntityState.Added || e.State == EntityState.Modified));
+            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
         foreach (var entry in entries)
         {
-            entry.Property("LastUpdated").CurrentValue = DateTime.UtcNow;
+            if (entry.Metadata.FindProperty("LastUpdated") != null)
+            {
+                entry.Property("LastUpdated").CurrentValue = DateTime.UtcNow;
+            }
         }
 
         return base.SaveChangesAsync(cancellationToken);

@@ -9,8 +9,11 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
     public void Configure(EntityTypeBuilder<Enrollment> builder)
     {
         builder.HasKey(e => e.Id);
+        
+        builder.Property(e => e.IsArchived).IsRequired();
 
-      
+        builder.HasQueryFilter(e => !e.Student.IsDeleted);
+
         builder.HasOne(e => e.Student)
             .WithMany(s => s.Enrollments)
             .HasForeignKey(e => e.StudentId)
