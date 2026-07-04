@@ -1,4 +1,6 @@
 ﻿
+using Tms.Api.Services;
+
 namespace TmsApi;
 
 public class EnrollmentWorker
@@ -18,7 +20,7 @@ public class EnrollmentWorker
 
         using var scope = _scopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IEnrollmentService>();
-        var records = await service.GetAllAsync();
+        var records = await service.GetAllAsync(CancellationToken.None);
 
         _logger.LogInformation("Processed {Count} enrollment records.", records.Count);
     }

@@ -89,7 +89,8 @@ namespace TmsApi.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Capacity")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("MaxCapacity");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -103,7 +104,7 @@ namespace TmsApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("TmsApi.Entities.Enrollment", b =>

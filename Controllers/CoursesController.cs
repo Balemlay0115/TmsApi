@@ -1,45 +1,35 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Tms.Api.Dtos;
+using Tms.Api.Services;
 
-namespace TmsApi.Controllers;
+namespace Tms.Api.Controllers;
 
 [ApiController]
 [Route("api/courses")]
-public class CoursesController : ControllerBase
+public class CoursesController(ICourseService courseService) : ControllerBase
 {
-    private readonly ICourseService _courseService;
-
-    public CoursesController(ICourseService courseService)
+    [HttpGet("{id:int}", Name = nameof(GetCourseById))]
+    public async Task<IActionResult> GetCourseById(int id, CancellationToken ct)
     {
-        _courseService = courseService;
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var courses = await _courseService.GetAllAsync();
-        return Ok(courses);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
-    {
-        var course = await _courseService.GetByIdAsync(id);
+        var course = await courseService.GetByIdAsync(id, ct);
         return course is not null ? Ok(course) : NotFound();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateCourseRequest request)
+    public async Task<IActionResult> CreateCourse(CreateCourseRequest request, CancellationToken ct)
     {
-        var course = await _courseService.CreateAsync(request.CourseCode, request.Title);
-        return CreatedAtAction(nameof(GetById), new { id = course.Id }, course);
-    }
+        if (await courseService.CodeExistsAsync(request.Code, ct))
+        {
+            return Conflict(new ProblemDetails
+            {
+                Title = "Course code already exists",
+                Detail = $"A course with code '{request.Code}' is already registered.",
+                Status = StatusCodes.Status409Conflict
+            });
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
-    {
-        var deleted = await _courseService.DeleteAsync(id);
-        return deleted ? NoContent() : NotFound();
+        var result = await courseService.CreateAsync(request, ct);
+        return CreatedAtAction(nameof(GetCourseById), new { id = result.Id }, result);
     }
 }
-
-public record CreateCourseRequest(string CourseCode, string Title);
