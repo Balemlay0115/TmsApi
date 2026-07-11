@@ -3,14 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using TmsApi;
 using TmsApi.Data;
-using TmsApi.DTOs;
+using TmsApi.Dtos; 
 using TmsApi.Entities;
-using Tms.Api.Services;
+using TmsApi.Services;
+using TmsApi.Filters; // Added for the global audit filter
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Database Setup
 builder.Services.AddDbContext<TmsDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase"))
         .LogTo(Console.WriteLine, LogLevel.Information)
@@ -18,11 +20,13 @@ builder.Services.AddDbContext<TmsDbContext>(options =>
 
 builder.Services.AddProblemDetails();
 
+// Security Schemas
 builder.Services
     .AddAuthentication("Training")
     .AddScheme<AuthenticationSchemeOptions, TrainingAuthHandler>("Training", null);
 builder.Services.AddAuthorization();
 
+// Business Engine Registrations
 builder.Services.AddSingleton<EnrollmentWorker>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
@@ -33,7 +37,11 @@ builder.Services.AddOptions<PaymentOptions>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-builder.Services.AddControllers()
+// Configured Controllers with Global Cross-Cutting Filters
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<AuditLogFilter>(); // Registered Global Audit Filter
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -55,8 +63,8 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+// Middleware Execution Pipeline
 app.UseMiddleware<RequestLoggingMiddleware>();
-
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseHttpsRedirection();
@@ -67,6 +75,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Minimal API Endpoints
 app.MapGet("/scaler/v1", () => Results.Ok(new
 {
     status = "ok",
@@ -102,10 +111,10 @@ app.MapGet("/api/dashboard/top-courses", async (TmsDbContext context, Cancellati
     return Results.Ok(topCourses);
 });
 
+// Database Migration & Initial Sync
 using (var scope = app.Services.CreateAsyncScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<TmsDbContext>();
-
     context.Database.Migrate();
 
     if (!context.Students.Any())
@@ -122,9 +131,9 @@ using (var scope = app.Services.CreateAsyncScope())
 
         var courses = new List<Course>
         {
-            new() { Code = "CS-101", Title = "Introduction to Computer Science", Capacity = 30 },
-            new() { Code = "CS-201", Title = "Data Structures and Algorithms", Capacity = 25 },
-            new() { Code = "MAT-101", Title = "Calculus I", Capacity = 40 }
+            new() { Code = "CS-101", Title = "Introduction to Computer Science", MaxCapacity = 30 },
+            new() { Code = "CS-201", Title = "Data Structures and Algorithms", MaxCapacity = 25 },
+            new() { Code = "MAT-101", Title = "Calculus I", MaxCapacity = 40 }
         };
         context.Courses.AddRange(courses);
         context.SaveChanges();
@@ -139,6 +148,14 @@ using (var scope = app.Services.CreateAsyncScope())
         context.Enrollments.AddRange(enrollments);
         context.SaveChanges();
     }
+}
+
+// Development Seed Data
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<TmsDbContext>();
+    await DataSeeder.SeedAsync(context);
 }
 
 app.Run();

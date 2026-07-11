@@ -39,7 +39,7 @@ public class TestController(TmsDbContext context) : ControllerBase
         try
         {
             var students = context.Students
-                .Where(s => s.GPA >= 3.5m)
+                .Where(s => IsHonorRoll(s.GPA))
                 .ToList();
             return Ok(students);
         }

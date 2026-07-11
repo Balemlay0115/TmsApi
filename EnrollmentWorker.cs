@@ -1,5 +1,5 @@
-﻿
-using Tms.Api.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
+using TmsApi.Services; // Fixed: Added missing service namespace
 
 namespace TmsApi;
 
@@ -20,6 +20,8 @@ public class EnrollmentWorker
 
         using var scope = _scopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IEnrollmentService>();
+        
+        // Fixed: Supplied a default CancellationToken to match the service signature
         var records = await service.GetAllAsync(CancellationToken.None);
 
         _logger.LogInformation("Processed {Count} enrollment records.", records.Count);
