@@ -22,6 +22,35 @@ namespace TmsApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<int>("MaxCapacity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Courses");
+                });
+
             modelBuilder.Entity("TmsApi.Entities.Assessment", b =>
                 {
                     b.Property<int>("Id")
@@ -78,35 +107,6 @@ namespace TmsApi.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("Certificates");
-                });
-
-            modelBuilder.Entity("TmsApi.Entities.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<int>("MaxCapacity")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("TmsApi.Entities.Enrollment", b =>
@@ -184,7 +184,7 @@ namespace TmsApi.Migrations
 
             modelBuilder.Entity("TmsApi.Entities.Assessment", b =>
                 {
-                    b.HasOne("TmsApi.Entities.Course", "Course")
+                    b.HasOne("Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -195,7 +195,7 @@ namespace TmsApi.Migrations
 
             modelBuilder.Entity("TmsApi.Entities.Certificate", b =>
                 {
-                    b.HasOne("TmsApi.Entities.Course", "Course")
+                    b.HasOne("Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -214,7 +214,7 @@ namespace TmsApi.Migrations
 
             modelBuilder.Entity("TmsApi.Entities.Enrollment", b =>
                 {
-                    b.HasOne("TmsApi.Entities.Course", "Course")
+                    b.HasOne("Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -231,7 +231,7 @@ namespace TmsApi.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("TmsApi.Entities.Course", b =>
+            modelBuilder.Entity("Course", b =>
                 {
                     b.Navigation("Enrollments");
                 });

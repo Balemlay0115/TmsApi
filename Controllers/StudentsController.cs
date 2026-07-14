@@ -1,6 +1,12 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using TmsApi.Data;
+using TmsApi.Dtos;     // Added to resolve CreateStudentRequest
+using TmsApi.Services; // Added to resolve IStudentService
 
 namespace TmsApi.Controllers;
 
@@ -181,5 +187,3 @@ public class StudentsController : ControllerBase
         return affected > 0 ? NoContent() : NotFound();
     }
 }
-
-public record CreateStudentRequest(string Name, string Email);

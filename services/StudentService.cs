@@ -1,57 +1,99 @@
-namespace TmsApi;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using TmsApi.Data;
+using TmsApi.Dtos;
+using TmsApi.Entities;
 
-public interface IStudentService
+namespace TmsApi.Services;
+
+public class StudentService(TmsDbContext db, ILogger<StudentService> logger) : IStudentService
 {
-    Task<StudentRecord> CreateAsync(string name, string email);
-    Task<StudentRecord?> GetByIdAsync(string id);
-    Task<IReadOnlyList<StudentRecord>> GetAllAsync();
-    Task<bool> DeleteAsync(string id);
-}
-
-public class StudentService : IStudentService
-{
-    private readonly Dictionary<string, StudentRecord> _store = new();
-    private readonly ILogger<StudentService> _logger;
-
-    public StudentService(ILogger<StudentService> logger)
+    public async Task<PagedResponse<StudentResponseDto>> GetStudentsAsync(PagedRequest request, CancellationToken ct)
     {
-        _logger = logger;
-    }
+        var page = Math.Max(1, request.Page);
+        var pageSize = request.PageSize;
 
-    public Task<StudentRecord> CreateAsync(string name, string email)
-    {
-        var id = Guid.NewGuid().ToString("N")[..8];
-        var student = new StudentRecord(id, name, email, DateTime.UtcNow);
-        _store[id] = student;
-        _logger.LogInformation("Created student {StudentId} {StudentName}", id, name);
-        return Task.FromResult(student);
-    }
+        var query = db.Students.AsNoTracking();
 
-    public Task<StudentRecord?> GetByIdAsync(string id)
-    {
-        _store.TryGetValue(id, out var student);
-        return Task.FromResult(student);
-    }
+        var totalCount = await query.CountAsync(ct);
 
-    public Task<IReadOnlyList<StudentRecord>> GetAllAsync()
-    {
-        IReadOnlyList<StudentRecord> all = _store.Values.ToList();
-        return Task.FromResult(all);
-    }
+        var items = await query
+            .OrderBy(s => s.Name)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(s => new StudentResponseDto
+            {
+                Id = s.Id,
+                RegistrationNumber = s.RegistrationNumber,
+                Name = s.Name,
+                GPA = s.GPA
+            })
+            .ToListAsync(ct);
 
-    public Task<bool> DeleteAsync(string id)
-    {
-        var removed = _store.Remove(id);
-        if (removed)
+        // Instantiate using your required & init properties perfectly matching your record definition
+        return new PagedResponse<StudentResponseDto>
         {
-            _logger.LogInformation("Deleted student {StudentId}", id);
-        }
-        else
+            Items = items,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
+    public async Task<StudentResponseDto?> GetByIdAsync(int id, CancellationToken ct)
+    {
+        var student = await db.Students
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == id, ct);
+
+        if (student is null) return null;
+
+        return new StudentResponseDto
         {
-            _logger.LogWarning("Delete failed; student {StudentId} not found", id);
+            Id = student.Id,
+            RegistrationNumber = student.RegistrationNumber,
+            Name = student.Name,
+            GPA = student.GPA
+        };
+    }
+
+    public async Task<StudentResponseDto> CreateAsync(CreateStudentRequest request, CancellationToken ct)
+    {
+        var student = new Student
+        {
+            Name = request.Name,
+            RegistrationNumber = $"TMS-2026-{Guid.NewGuid().ToString()[..4].ToUpper()}",
+            GPA = 0.0m, 
+            IsActive = true
+        };
+
+        db.Students.Add(student);
+        await db.SaveChangesAsync(ct);
+
+        logger.LogInformation("Created student {StudentId} with Reg Number {RegNum}", student.Id, student.RegistrationNumber);
+
+        return new StudentResponseDto
+        {
+            Id = student.Id,
+            RegistrationNumber = student.RegistrationNumber,
+            Name = student.Name,
+            GPA = student.GPA
+        };
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken ct)
+    {
+        var student = await db.Students.FindAsync([id], cancellationToken: ct);
+        if (student is null)
+        {
+            logger.LogWarning("Delete failed: Student {StudentId} not found.", id);
+            return false;
         }
-        return Task.FromResult(removed);
+
+        student.IsDeleted = true; // Soft delete flag
+        await db.SaveChangesAsync(ct);
+
+        logger.LogInformation("Soft-deleted student {StudentId}", id);
+        return true;
     }
 }
-
-public record StudentRecord(string Id, string Name, string Email, DateTime CreatedAt);

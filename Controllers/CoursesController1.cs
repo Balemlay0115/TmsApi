@@ -50,16 +50,15 @@ public class CoursesController(ICourseService courseService, LinkGenerator linkG
             links.Add(new LinkDto(enrollmentsPath, "enroll", "POST"));
         }
 
-        // 4. Project and map output structure out
-        var detailDto = new CourseDetailDto
-        {
-            Id = course.Id,
-            Code = course.Code,
-            Title = course.Title,
-            MaxCapacity = course.MaxCapacity,
-            EnrollmentCount = course.EnrollmentCount,
-            Links = links
-        };
+        
+       var detailDto = new CourseDetailDto(
+            course.Id,
+            course.Code,
+            course.Title,
+            course.MaxCapacity,
+            course.EnrollmentCount,
+            links
+        );
 
         return Ok(detailDto);
     }

@@ -1,11 +1,12 @@
+using System.Collections.Generic;
+
 namespace TmsApi.Dtos;
 
-public record CourseDetailDto
-{
-    public required int Id { get; init; }
-    public required string Code { get; init; }
-    public required string Title { get; init; }
-    public required int MaxCapacity { get; init; }
-    public required int EnrollmentCount { get; init; }
-    public required IReadOnlyList<LinkDto> Links { get; init; }
-}
+public record CourseDetailDto(
+    int Id, 
+    string Code, 
+    string Title, 
+    int MaxCapacity, 
+    int EnrollmentCount, 
+    IReadOnlyList<LinkDto> Links
+) : CourseResponseDto(Id, Code, Title, MaxCapacity, EnrollmentCount);

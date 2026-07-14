@@ -1,7 +1,5 @@
-namespace Tms.Api.Dtos;
+using System;
 
-public record EnrollmentResponseDto(
-    int Id,
-    int CourseId,
-    int StudentId,
-    DateTime EnrolledAt);
+namespace TmsApi.Dtos; // Flatten this namespace so it's globally visible inside Dtos
+
+public record EnrollmentRecordDto(int Id, int StudentId, string CourseCode, DateTime EnrolledAt);
