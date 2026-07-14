@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TmsApi.Data;
-using TmsApi.Entities; // Fixed: Added missing entity reference for Course
+using TmsApi.Entities; 
 
-namespace TmsApi.Data; // Fixed: Corrected namespace structure
-
+namespace TmsApi.Data; 
 public static class DataSeeder
 {
     private static readonly (string Code, string Title, int MaxCapacity)[] Courses =

@@ -1,21 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TmsApi.Data;
 using TmsApi.Dtos;
 using TmsApi.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace TmsApi.Services;
 
-public interface IEnrollmentService
-{
-    Task<EnrollmentRecordDto> EnrollAsync(int studentId, string courseCode, CancellationToken ct);
-    Task<EnrollmentRecordDto?> GetByIdAsync(int id, CancellationToken ct);
-    Task<IReadOnlyList<EnrollmentRecordDto>> GetAllAsync(CancellationToken ct);
-    Task<IReadOnlyList<EnrollmentRecordDto>> GetByCourseAsync(int courseId, CancellationToken ct);
-    Task<bool> DeleteAsync(int id, CancellationToken ct);
-}
-
 public class EnrollmentService(TmsDbContext context, ILogger<EnrollmentService> logger) : IEnrollmentService
 {
+    // --- Existing Module 6 Implementations ---
     public async Task<EnrollmentRecordDto> EnrollAsync(int studentId, string courseCode, CancellationToken ct)
     {
         // 1. Verify Student status
@@ -85,6 +83,25 @@ public class EnrollmentService(TmsDbContext context, ILogger<EnrollmentService> 
         logger.LogInformation("Deleted enrollment {EnrollmentId}", id);
         return true;
     }
-}
 
-public record EnrollmentRecordDto(int Id, int StudentId, string CourseCode, DateTime EnrolledAt);
+    // --- Added for Module 7, Exercise 2 (CQRS Implementations) ---
+    public async Task<bool> ExistsAsync(int studentId, string courseCode, CancellationToken ct)
+    {
+        return await context.Enrollments
+            .AnyAsync(e => e.StudentId == studentId && e.Course.Code == courseCode, ct);
+    }
+
+    public async Task AddAsync(Enrollment enrollment, CancellationToken ct)
+    {
+        context.Enrollments.Add(enrollment);
+        await context.SaveChangesAsync(ct);
+    }
+
+    public async Task<List<Enrollment>> GetByStudentIdAsync(int studentId, CancellationToken ct)
+    {
+        return await context.Enrollments
+            .Include(e => e.Course)
+            .Where(e => e.StudentId == studentId)
+            .ToListAsync(ct);
+    }
+}

@@ -122,3 +122,15 @@ C:\Users\csug\Desktop\tmsapi\TmsApi\obj\Debug\net10.0\refint\TmsApi.dll
 C:\Users\csug\Desktop\tmsapi\TmsApi\obj\Debug\net10.0\TmsApi.pdb
 C:\Users\csug\Desktop\tmsapi\TmsApi\obj\Debug\net10.0\TmsApi.genruntimeconfig.cache
 C:\Users\csug\Desktop\tmsapi\TmsApi\obj\Debug\net10.0\ref\TmsApi.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\Asp.Versioning.Abstractions.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\Asp.Versioning.Http.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\Asp.Versioning.Mvc.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\Asp.Versioning.Mvc.ApiExplorer.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\FluentValidation.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\MediatR.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\MediatR.Contracts.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
