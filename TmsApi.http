@@ -1,6 +1,11 @@
 @TmsApi_HostAddress = http://localhost:5086
 
-GET {{TmsApi_HostAddress}}/api/test/translation-fail
+### Get V1 Courses (Verify Deprecation Headers and V1 Contract)
+GET {{TmsApi_HostAddress}}/api/v1/courses
 Accept: application/json
 
 ###
+
+### Get V2 Courses (Verify Standard Headers and V2 Envelope)
+GET {{TmsApi_HostAddress}}/api/v2/courses
+Accept: application/json
