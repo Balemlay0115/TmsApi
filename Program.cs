@@ -1,26 +1,41 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using TmsApi;
 using TmsApi.Data;
 using TmsApi.Dtos; 
 using TmsApi.Entities;
 using TmsApi.Services;
-using TmsApi.Filters; // Added for the global audit filter
+using TmsApi.Filters;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
-using Asp.Versioning; // Added for API Versioning
-using TmsApi.Middleware; // Added for V1 Deprecation Middleware
+using Asp.Versioning;
+using TmsApi.Middleware;
+using FluentValidation;
+using MediatR;
+using TmsApi.Application.Behaviors;
+using TmsApi.Application.Enrollments.Commands;
+using TmsApi.ExceptionHandlers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// --- Step 8: Register MediatR, Behaviors, and Exception Handling ---
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(EnrollStudentCommand).Assembly));
+
+builder.Services.AddValidatorsFromAssembly(typeof(EnrollStudentValidator).Assembly);
+
+// LoggingBehavior MUST register first so it wraps the ValidationBehavior
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 // Database Setup
 builder.Services.AddDbContext<TmsDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase"))
         .LogTo(Console.WriteLine, LogLevel.Information)
         .EnableSensitiveDataLogging());
-
-builder.Services.AddProblemDetails();
 
 // Security Schemas
 builder.Services
@@ -31,8 +46,8 @@ builder.Services.AddAuthorization();
 // Business Engine Registrations
 builder.Services.AddSingleton<EnrollmentWorker>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
-builder.Services.AddScoped<IStudentService, StudentService>();     // DB-backed Student Service
-builder.Services.AddScoped<ICertificateService, CertificateService>(); // Registered Certificate Service
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ICertificateService, CertificateService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 
 builder.Services.AddOptions<PaymentOptions>()
@@ -43,7 +58,7 @@ builder.Services.AddOptions<PaymentOptions>()
 // Configured Controllers with Global Cross-Cutting Filters
 builder.Services.AddControllers(options =>
     {
-        options.Filters.Add<AuditLogFilter>(); // Registered Global Audit Filter
+        options.Filters.Add<AuditLogFilter>();
     })
     .AddJsonOptions(options =>
     {
@@ -67,7 +82,7 @@ builder.Services.AddApiVersioning(options =>
     options.ReportApiVersions = true;
     options.ApiVersionReader = ApiVersionReader.Combine(
         new UrlSegmentApiVersionReader(),
-        new HeaderApiVersionReader("X-Api-Version") // Added Optional step 6 header reader
+        new HeaderApiVersionReader("X-Api-Version")
     );
 })
 .AddApiExplorer(options =>
@@ -88,14 +103,12 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     
-    // Update your scalar configuration
     app.MapScalarApiReference(options =>
     {
         options.WithTitle("TMS API Reference")
             .WithTheme(ScalarTheme.DeepSpace)
             .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
             
-        // Pull both documents into its sidebar dropdown
         options
             .AddDocument("v1", "API Version 1.0")
             .AddDocument("v2", "API Version 2.0");
@@ -104,10 +117,11 @@ if (app.Environment.IsDevelopment())
 
 // Middleware Execution Pipeline
 app.UseMiddleware<RequestLoggingMiddleware>();
-app.UseMiddleware<V1DeprecationMiddleware>(); // Registered before controllers map
+app.UseMiddleware<V1DeprecationMiddleware>();
+
+// Global Exception Handler must reside near the top
 app.UseExceptionHandler();
 app.UseStatusCodePages();
-//app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthentication();
@@ -116,38 +130,18 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Minimal API Endpoints
-app.MapGet("/scaler/v1", () => Results.Ok(new
-{
-    status = "ok",
-    version = "v1"
-}));
-
-app.MapGet("/api/assessments/results", () => Results.Ok(new
-{
-    courseCode = "CS-001",
-    studentId = "S-001",
-    letterGrade = "A"
-})).RequireAuthorization();
-
-app.MapGet("/api/enrollments/worker-smoke", async (EnrollmentWorker worker) =>
-{
-    await worker.ProcessBatch();
-    return Results.Ok("processed");
-});
+app.MapGet("/scaler/v1", () => Results.Ok(new { status = "ok", version = "v1" }));
+app.MapGet("/api/assessments/results", () => Results.Ok(new { courseCode = "CS-001", studentId = "S-001", letterGrade = "A" })).RequireAuthorization();
+app.MapGet("/api/enrollments/worker-smoke", async (EnrollmentWorker worker) => { await worker.ProcessBatch(); return Results.Ok("processed"); });
 
 app.MapGet("/api/dashboard/top-courses", async (TmsDbContext context, CancellationToken ct = default) =>
 {
     var topCourses = await context.Enrollments
         .GroupBy(e => e.Course.Title)
-        .Select(group => new
-        {
-            CourseTitle = group.Key,
-            EnrollmentCount = group.Count()
-        })
+        .Select(group => new { CourseTitle = group.Key, EnrollmentCount = group.Count() })
         .OrderByDescending(c => c.EnrollmentCount)
         .Take(5)
         .ToListAsync(ct);
-
     return Results.Ok(topCourses);
 });
 
@@ -190,7 +184,6 @@ using (var scope = app.Services.CreateAsyncScope())
     }
 }
 
-// Development Seed Data
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
