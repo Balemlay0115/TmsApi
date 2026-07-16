@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "JxFm3zsoJvk=",
+  "success": true,
+  "projectFilePath": "c:\\Users\\csug\\Desktop\\tmsapi\\TmsApi\\TmsApi.Application\\TmsApi.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\csug\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512"
+  ],
+  "logs": []
+}
