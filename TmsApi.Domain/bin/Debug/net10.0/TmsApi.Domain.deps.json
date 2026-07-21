@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "TmsApi.Domain/1.0.0": {
+        "runtime": {
+          "TmsApi.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "TmsApi.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

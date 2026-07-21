@@ -1,0 +1,12 @@
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\bin\Debug\net10.0\TmsApi.Domain.deps.json
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\bin\Debug\net10.0\TmsApi.Domain.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\bin\Debug\net10.0\TmsApi.Domain.pdb
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\TmsApi.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\TmsApi.Domain.AssemblyInfoInputs.cache
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\TmsApi.Domain.AssemblyInfo.cs
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\TmsApi.Domain.csproj.CoreCompileInputs.cache
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\TmsApi.Domain.sourcelink.json
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\TmsApi.Domain.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\refint\TmsApi.Domain.dll
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\TmsApi.Domain.pdb
+C:\Users\csug\Desktop\tmsapi\TmsApi\TmsApi.Domain\obj\Debug\net10.0\ref\TmsApi.Domain.dll
