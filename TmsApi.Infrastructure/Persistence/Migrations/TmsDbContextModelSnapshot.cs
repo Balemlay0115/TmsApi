@@ -17,41 +17,12 @@ namespace TmsApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<int>("MaxCapacity")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("TmsApi.Entities.Assessment", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Assessment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,7 +50,7 @@ namespace TmsApi.Migrations
                     b.ToTable("Assessments");
                 });
 
-            modelBuilder.Entity("TmsApi.Entities.Certificate", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Certificate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +80,36 @@ namespace TmsApi.Migrations
                     b.ToTable("Certificates");
                 });
 
-            modelBuilder.Entity("TmsApi.Entities.Enrollment", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<int>("MaxCapacity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("TmsApi.Domain.Entities.Enrollment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -141,7 +141,7 @@ namespace TmsApi.Migrations
                     b.ToTable("Enrollments");
                 });
 
-            modelBuilder.Entity("TmsApi.Entities.Student", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -182,9 +182,9 @@ namespace TmsApi.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("TmsApi.Entities.Assessment", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Assessment", b =>
                 {
-                    b.HasOne("Course", "Course")
+                    b.HasOne("TmsApi.Domain.Entities.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -193,15 +193,15 @@ namespace TmsApi.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("TmsApi.Entities.Certificate", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Certificate", b =>
                 {
-                    b.HasOne("Course", "Course")
+                    b.HasOne("TmsApi.Domain.Entities.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TmsApi.Entities.Student", "Student")
+                    b.HasOne("TmsApi.Domain.Entities.Student", "Student")
                         .WithMany("Certificates")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -212,15 +212,15 @@ namespace TmsApi.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("TmsApi.Entities.Enrollment", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Enrollment", b =>
                 {
-                    b.HasOne("Course", "Course")
+                    b.HasOne("TmsApi.Domain.Entities.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("TmsApi.Entities.Student", "Student")
+                    b.HasOne("TmsApi.Domain.Entities.Student", "Student")
                         .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -231,12 +231,12 @@ namespace TmsApi.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("Course", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Course", b =>
                 {
                     b.Navigation("Enrollments");
                 });
 
-            modelBuilder.Entity("TmsApi.Entities.Student", b =>
+            modelBuilder.Entity("TmsApi.Domain.Entities.Student", b =>
                 {
                     b.Navigation("Certificates");
 
